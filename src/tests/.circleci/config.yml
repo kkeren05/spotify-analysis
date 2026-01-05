@@ -1,23 +1,24 @@
+# .circleci/config.yml
 version: 2.1
 
 jobs:
   build:
     docker:
-      - image: cimg/python:3.14
+      - image: cimg/python:3.10  # Python 3.10 environment
     working_directory: ~/repo
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            python3 -m pip install --upgrade pip
+            python -m pip install --upgrade pip
             pip install -r requirements.txt
       - run:
-          name: Run Spotify Analysis
-          command: python3 run_analysis.py
+          name: Run tests
+          command: |
+            python -m unittest discover -s src/tests
 
 workflows:
-  version: 2
-  build_and_run:
+  build_and_test:
     jobs:
       - build

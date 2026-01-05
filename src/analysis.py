@@ -27,3 +27,38 @@ def correlation_matrix(df: pd.DataFrame) -> pd.DataFrame:
 
 def tempo_vs_popularity(df: pd.DataFrame) -> pd.DataFrame:
     return df[['tempo','popularity']]
+
+def popularity_by_tempo_bin(df: pd.DataFrame, bins: int = 5) -> pd.DataFrame:
+    """
+    Analyse average popularity across tempo bins.
+    """
+    df = df.copy()
+    df["tempo_bin"] = pd.cut(df["tempo"], bins=bins)
+
+    return (
+        df.groupby("tempo_bin")["popularity"]
+        .mean()
+        .reset_index()
+    )
+
+def popularity_by_valence(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Analyse how musical positivity (valence) relates to popularity.
+    """
+    df = df.copy()
+    df["valence_group"] = pd.cut(
+        df["valence"],
+        bins=[0, 0.33, 0.66, 1],
+        labels=["Low", "Medium", "High"]
+    )
+
+    return (
+        df.groupby("valence_group")["popularity"]
+        .mean()
+        .reset_index()
+    )
+from src.logger import setup_logger
+import logging
+
+setup_logger()
+logging.info("Starting Spotify analysis pipeline")
